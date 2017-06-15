@@ -1,0 +1,146 @@
+!
+!   Author:  Henry A. Boateng  (hboateng@bates.edu) 
+!   Department of Mathematics
+!   Bates College, Lewiston ME 
+!
+!   Copyright (c) 2017. Bates College Board of Trustees.
+!   All Rights Reserved.
+!
+!
+!   This file is the partial documentation for TREE_PC and TREE_CP, 
+!   Fortran90 subroutines for approximating the multipolar electrostatic 
+!   potential on N interacting point-multipoles. This is work that has
+!   been submitted to the Journal of Chemical Physics for publication.
+!   TREE_PC employs a mesh-free tree algorithm call  particle-cluster and
+!   TREE_CP employs the cluster-particle algorithm which is also a 
+!   mesh-free tree method. 
+!
+!   This program is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 3 of the License, or
+!   (at your option) any later version.
+!
+!   This program is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
+!
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, <http://www.gnu.org/licenses/>. 
+!
+!%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+                     README file
+
+
+   NOTE: Please include the following references in any work that
+         utilizes this code:
+		 
+        (1) Boateng. H. A.: Mesh-Free Hierarchical Clustering Methods
+            for Fast Evaluation of Electrostatic Interactions of 
+            Point Multipoles
+            J. Phys. Chem., submitted, (2017)  
+		 
+
+Summary of files :
+------------------
+
+      exact_multipole.f90 : Program to compute the interactions directly. It should
+                            be run first to generate the exact energies to which
+                            the approximate energies from the treecode algorithms
+                            are compared.
+
+      input_ex.txt   : Input file for the executable from compiling exact_multipole.f90
+
+      T*.txt         : Files containing the coordinates of the target particles
+                       uniformly distributed in [-0.5,0.5]x[-0.5,0.5]x[-0.5,0.5].
+                       The files T10000.txt, T100000.txt and T1000000.txt
+                       correspond to 10000, 100000, and 1000000 target particles
+                       respectively.
+
+! Files for serial implementation
+
+      treedriver.f90      : Driver program for testing the treecode subroutines 
+                            tree_pc.f90 and tree_cp.f90 
+
+      tree_pc.f90         : Subroutine for particle-cluster treecode
+	  
+      tree_cp.f90         : Subroutine for cluster-particle treecode
+	  
+! Files for parallel implementation
+
+      treedriver_par.f90      : Driver program for testing the treecode subroutines
+                            tree_pc.f90 and tree_cp.f90
+
+      tree_pc_par.f90         : Subroutine for particle-cluster treecode
+
+      tree_cp_par.f90         : Subroutine for cluster-particle treecode
+
+      comms.inc               : File adapted from dl_poly(Daresbury Lab software) 
+      
+      basic_comms.f90         : File adapted from dl_poly(Daresbury Lab software)
+                              Contains MPI calls. Makes the code cleaner
+
+! Input files for treecode methods
+
+      input_pc.txt   : Input file for the executable from compiling tree_pc.f90 
+	  
+      input_cp.txt   : Input file for the executable from compiling tree_cp.f90
+	  
+
+Input for the treedriver.f90 :
+-------------------------------
+
+      Treedriver is written to work with both tree_pc.f90 and tree_cp.f90.
+      Treedriver will prompt the user for the following:
+ 
+ 
+      SAMPIN1     : (CHARACTER) Name of input file containing coordinates 
+				     of particles.
+				
+      SAMPIN2     : (CHARACTER) Name of input file containing the exact  
+	                  potential at of each site and the cpu time for direct 
+				    summation.
+				
+      SAMPOUT     : (CHARACTER) Name of output file
+	  			
+      NUMPARS     : (INTEGER) Number of particles 
+	  
+      THETA       : (REAL*8) The multipole acceptance criterion.
+	   
+      ORDER       : (INTEGER) Order of the Taylor expansions used for the
+                    approximation if the MAC is accepted.
+ 
+      MAXPARNODE  : (INTEGER) Maximum number of particles in a leaf 
+
+
+      IFLAG       : (INTEGER) Flag determining how tree division terminates:
+
+		    IFLAG=0  : Divide till number of particles in a leaf is less
+			                or equal to a given number.
+                    IFLAGS=1  : Divide till number of levels in a tree is equal to
+								a given number.
+      TREELEVEL   : (INTEGER) If IFLAG=1, then division the tree
+                        terminates if the cluster is at level=TREELEVEL.
+
+      SHRINK      : (INTEGER) Adaptive switch used in the construction of the
+	                           tree. If SHRINKS=1, then the bounds of a cluster
+					 are taken to be that of the minimal box that contains all
+					 the particles in the cluster. Else, each cluster is 
+					 divided into 8 child clusters of equal volume determined
+					 by the midpoints in the x, y, z directions.
+
+
+Output for the treedriver.f90 :
+-------------------------------
+
+The output file prints out two lines of data for each realization. The first line is
+a printout of the inputs:
+
+NUMPARS,IFLAG,MAXPARNODE,TREELEVEL,ORDER,THETA .
+
+The second line is a printout of:
+Relative error in total energy, root mean square error, cpu time for direct summation, 
+and cput time for the treecode approximation. 					 
