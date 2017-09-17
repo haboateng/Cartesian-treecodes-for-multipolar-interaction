@@ -48,18 +48,20 @@
 Summary of files :
 ------------------
 
-      exact_multipole.f90 : Program to compute the interactions directly. It should
-                            be run first to generate the exact energies to which
-                            the approximate energies from the treecode algorithms
-                            are compared.
-
-      input_ex.txt   : Input file for the executable from compiling exact_multipole.f90
-
       T*.txt         : Files containing the coordinates of the target particles
                        uniformly distributed in [-0.5,0.5]x[-0.5,0.5]x[-0.5,0.5].
                        The files T10000.txt, T100000.txt and T1000000.txt
                        correspond to 10000, 100000, and 1000000 target particles
                        respectively.
+
+!!!!!!!
+! FILES FOR COMPUTING JUST THE POTENTIAL
+      exact_multipole.f90 : Program to compute the interactions directly. It should
+                            be run first to generate the exact potentials to which
+                            the approximate potentials from the treecode algorithms
+                            are compared.
+
+      input_ex.txt   : Input file for the executable from compiling exact_multipole.f90
 
 ! Files for serial implementation
 
@@ -145,3 +147,79 @@ NUMPARS,IFLAG,MAXPARNODE,TREELEVEL,ORDER,THETA .
 The second line is a printout of:
 Relative error in total energy, root mean square error, cpu time for direct summation, 
 and cput time for the treecode approximation. 					 
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! FILES FOR COMPUTING THE POTENTIAL AND FORCES - FULL RANK
+
+      exact_mforces.f90 :   Program to compute the interactions directly. It should
+                            be run first to generate the exact potentials and forces to which
+                            the approximate potentials and forces from the treecode algorithms
+                            are compared.
+
+      input_ex.txt   : Input file for the executable from compiling exact_mforces.f90
+
+! Files for serial implementation
+             
+      treedriver_mforces.f90      : Driver program for testing the treecode subroutines
+                            tree_pc_mforces.f90 and tree_cp_mforces.f90
+
+      tree_pc_mforces.f90         : Subroutine for particle-cluster treecode
+
+      tree_cp_mforces.f90         : Subroutine for cluster-particle treecode
+
+Output for the treedriver_mforces.f90 :
+-------------------------------
+
+The output file prints out two lines of data for each realization. The first line is
+a printout of the inputs:
+
+NUMPARS,IFLAG,MAXPARNODE,TREELEVEL,ORDER,THETA .
+
+The second line is a printout of:
+Relative error in total energy, root mean square error in energy, 
+root mean square error in forces, cpu time for direct summation, 
+and cput time for the treecode approximation.
+
+The third line is a printout of:
+Root mean square in the x-component of the force, Root mean square in the y-component of the force,
+and Root mean square in the z-component of the force.
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! FILES FOR COMPUTING THE POTENTIAL AND FORCES - MIXED RANK (ORDERS)
+
+      exact_mixed_order.f90 :   Program to compute the interactions directly. It should
+                            be run first to generate the exact potentials and forces to which
+                            the approximate potentials and forces from the treecode algorithms
+                            are compared.
+
+      input_ex.txt   : Input file for the executable from compiling exact_mixed_order.f90
+
+! Files for serial implementation
+
+      treedriver_mixed_order.f90      : Driver program for testing the treecode subroutines
+                            tree_pc_mixed_order.f90 and tree_cp_mixed_order.f90
+
+      tree_pc_mixed_order.f90         : Subroutine for particle-cluster treecode
+
+      tree_cp_mixed_order.f90         : Subroutine for cluster-particle treecode
+
+Output for the treedriver_mforces.f90 :
+-------------------------------
+
+The output file prints out two lines of data for each realization. The first line is
+a printout of the inputs:
+
+NUMPARS,IFLAG,MAXPARNODE,TREELEVEL,ORDER,THETA .
+
+The second line is a printout of:
+Relative error in total energy, root mean square error in energy,
+root mean square error in forces, cpu time for direct summation,
+and cput time for the treecode approximation.
+
+The third line is a printout of:
+Root mean square in the x-component of the force, Root mean square in the y-component of the force,
+and Root mean square in the z-component of the force.
+
